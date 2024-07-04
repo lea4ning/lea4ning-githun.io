@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <link rel="icon" href="https://res.lea4ning.top/res/202407041700169.jpg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="## 【五】路由层
+
+### 【1】路由匹配
+
+```python
+# urls.py
+'''django1.10版本引入了path函数，1.x版本使用正则匹配【url(r'正则/')】'''
+from django.urls import path
+from views import func
+
+urlpatterns = [
+    # path('路径/',视图函数)
+    path('xxx/',views.func)
+]
+```
+
+### 【2】正则匹配
+
+```python
+# urls.py
+from django.urls import re_path
+from views import func
+
+urlpatterns = [
+    # 正则匹配分为有名分组和无名分组
+    
+    '''无名分组匹配到的路径在后端可以通过【*args】中的参数接受'''
+    re_path(r'^正则表达式/',views.func)  # 无名分组
+    
+    '''有名分组匹配到的路径在后端可以通过【**kwargs】或指定【key】接受数据'''
+    re_path(r'(?P<name>正则表达式)')  # 有名分组
+]
+```
+
+### 【3】路径转换器
+
+- **`<int>`**：匹配一个整数。">
+<meta property="og:title" content="Django基础知识点二">
+<meta property="og:description" content="## 【五】路由层
+
+### 【1】路由匹配
+
+```python
+# urls.py
+'''django1.10版本引入了path函数，1.x版本使用正则匹配【url(r'正则/')】'''
+from django.urls import path
+from views import func
+
+urlpatterns = [
+    # path('路径/',视图函数)
+    path('xxx/',views.func)
+]
+```
+
+### 【2】正则匹配
+
+```python
+# urls.py
+from django.urls import re_path
+from views import func
+
+urlpatterns = [
+    # 正则匹配分为有名分组和无名分组
+    
+    '''无名分组匹配到的路径在后端可以通过【*args】中的参数接受'''
+    re_path(r'^正则表达式/',views.func)  # 无名分组
+    
+    '''有名分组匹配到的路径在后端可以通过【**kwargs】或指定【key】接受数据'''
+    re_path(r'(?P<name>正则表达式)')  # 有名分组
+]
+```
+
+### 【3】路径转换器
+
+- **`<int>`**：匹配一个整数。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://lea4ning.github.io/lea4ning-githun.io/post/Django-ji-chu-zhi-shi-dian-er.html">
+<meta property="og:image" content="https://res.lea4ning.top/res/202407041700169.jpg">
+<title>Django基础知识点二</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">Django基础知识点二</h1>
+<div class="title-right">
+    <a href="https://lea4ning.github.io/lea4ning-githun.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/lea4ning/lea4ning-githun.io/issues/4" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h2>【五】路由层</h2>
+<h3>【1】路由匹配</h3>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+<span class="pl-s">'''django1.10版本引入了path函数，1.x版本使用正则匹配【url(r'正则/')】'''</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">func</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># path('路径/',视图函数)</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'xxx/'</span>,<span class="pl-s1">views</span>.<span class="pl-s1">func</span>)
+]</pre></div>
+<h3>【2】正则匹配</h3>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">re_path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">func</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># 正则匹配分为有名分组和无名分组</span>
+    
+    <span class="pl-s">'''无名分组匹配到的路径在后端可以通过【*args】中的参数接受'''</span>
+    <span class="pl-s1">re_path</span>(<span class="pl-s">r'^正则表达式/'</span>,<span class="pl-s1">views</span>.<span class="pl-s1">func</span>)  <span class="pl-c"># 无名分组</span>
+    
+    '<span class="pl-s">''</span><span class="pl-s1">有名分组匹配到的路径在后端可以通过</span>【<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>】<span class="pl-s1">或指定</span>【<span class="pl-s1">key</span>】<span class="pl-s1">接受数据</span>'''
+    re_path(r'(?P&lt;name&gt;正则表达式)')  <span class="pl-c"># 有名分组</span>
+]</pre></div>
+<h3>【3】路径转换器</h3>
+<ul>
+<li><strong><code class="notranslate">&lt;int&gt;</code></strong>：匹配一个整数。</li>
+<li><strong><code class="notranslate">&lt;str&gt;</code></strong>：匹配一个字符串，但不包含路径分隔符 <code class="notranslate">/</code>。</li>
+<li><strong><code class="notranslate">&lt;slug&gt;</code></strong>：匹配一个 Slug，由字母、数字、连字符或下划线组成。</li>
+<li><strong><code class="notranslate">&lt;uuid&gt;</code></strong>：匹配一个 UUID 格式的字符串。</li>
+<li><strong><code class="notranslate">&lt;path&gt;</code></strong>：匹配包含路径分隔符 <code class="notranslate">/</code> 的字符串。</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+
+<span class="pl-s">'''路径转换器与正则匹配的有名分组类似，且可以作类型转换'''</span>
+<span class="pl-s">'''普通的路由匹配拿到的路径都是字符串，而通过路径转换器后端可以拿到指定格式的数据'''</span>
+
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">func</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># &lt; int:id &gt;</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'根路径/&lt; 路径转换器:name &gt;'</span>,<span class="pl-s1">视图函数</span>)
+]</pre></div>
+<h3>【4】反向解析</h3>
+<ul>
+<li>在 Django 中进行反向解析时，必须要给 URL 模式或视图函数命名</li>
+</ul>
+<h4>【4.1】无名反向解析</h4>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">func</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-en">path</span>(<span class="pl-s">'路径/'</span>，<span class="pl-s1">视图函数</span>,<span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">'view_name'</span>)
+]</pre></div>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shortcuts</span> <span class="pl-k">import</span> <span class="pl-v">HttpResponse</span>, <span class="pl-s1">reverse</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-s1">url</span> <span class="pl-c1">=</span> <span class="pl-en">reverse</span>(<span class="pl-s">'view_name'</span>)
+    <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s1">url</span>)
+	<span class="pl-c"># '/view_name/' 可以通过该反向解析的url获取到该name对应的视图函数</span></pre></div>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-c">&lt;!-- 前端使用反向解析 --&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-c">&lt;!-- 比较常用于为按钮或链接添加跳转链接，跳转至指定视图函数 --&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>='<span class="pl-s">{% url </span>'<span class="pl-c1">view_name</span>'%}'<span class="pl-kos">&gt;</span>link<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span></pre></div>
+<h4>【4.2】有名反向解析</h4>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>,<span class="pl-s1">re_path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">func</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># 路径转换器</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'路径/&lt;int:id&gt;'</span>，<span class="pl-s1">视图函数</span>,<span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">'view_name'</span>),
+    <span class="pl-c"># 无名分组</span>
+    <span class="pl-en">re_path</span>(<span class="pl-s">'路径/(?P&lt;bid&gt;(\d+)/)'</span>,<span class="pl-s1">视图函数</span>,<span class="pl-s1">name</span> <span class="pl-c1">=</span> <span class="pl-s">'view_name'</span>)
+]</pre></div>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shortcuts</span> <span class="pl-k">import</span> <span class="pl-v">HttpResponse</span>, <span class="pl-s1">reverse</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>,<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>):
+    <span class="pl-s">'''当路由中设置为有名时，后端需要设置形参接受，否则会报错'''</span>
+    
+    <span class="pl-s1">url</span> <span class="pl-c1">=</span> <span class="pl-en">reverse</span>(<span class="pl-s">'view_name'</span>,<span class="pl-s1">kwargs</span><span class="pl-c1">=</span>{<span class="pl-s1">k</span>:<span class="pl-s1">v</span>})
+    <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s1">url</span>)
+	<span class="pl-c"># '/view_name/value/' 可以通过该反向解析的url获取到该name对应的视图函数</span></pre></div>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-c">&lt;!-- 前端 --&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-c">&lt;!-- 需要将参数传递放置在view_name后，否则将报错 --&gt;</span>
+    <span class="pl-kos">&lt;</span><span class="pl-ent">a</span> <span class="pl-c1">href</span>='<span class="pl-s">{% url </span>'<span class="pl-c1">view_name</span>' value %}'<span class="pl-kos">&gt;</span>link<span class="pl-kos">&lt;/</span><span class="pl-ent">a</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span></pre></div>
+<h3>【5】路由分发</h3>
+<ul>
+<li>为了对路由解耦合，保证代码清晰可读</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls</span>
+
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span>.<span class="pl-s1">conf</span> <span class="pl-k">import</span> <span class="pl-s1">include</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># 一般会为每一个应用程序创建一个urls文件</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'路径/'</span>,<span class="pl-en">iuclude</span>(<span class="pl-s">'指定文件夹.urls'</span>))
+]</pre></div>
+<h2>【六】视图层</h2>
+<h3>【1】响应三板斧</h3>
+<h4>【1.1】HttpResponse</h4>
+<ul>
+<li>将字符串转换为HttpResponse对象</li>
+<li>【注】视图函数所返回的对象必须是HttpResponse对象或者渲染的前端页面</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shortcuts</span> <span class="pl-k">import</span> <span class="pl-v">HttpResponse</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'Hello World!'</span>)</pre></div>
+<h4>【1.2】render</h4>
+<ul>
+<li>返回渲染的前端界面</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shortcuts</span> <span class="pl-k">import</span> <span class="pl-s1">render</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-k">return</span> <span class="pl-en">render</span>(<span class="pl-s1">request</span><span class="pl-c1">=</span><span class="pl-s1">request</span>,<span class="pl-s1">templates_name</span><span class="pl-c1">=</span><span class="pl-s">'前端文件.html'</span>，<span class="pl-s1">context</span><span class="pl-c1">=</span><span class="pl-s">'上下文'</span>)</pre></div>
+<h4>【1.3】redirect</h4>
+<ul>
+<li>重定向至指定视图函数</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shortcuts</span> <span class="pl-k">import</span> <span class="pl-s1">redirect</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-k">return</span> <span class="pl-en">redirect</span>(<span class="pl-s1">to</span><span class="pl-c1">=</span><span class="pl-s">'view_name'</span>，<span class="pl-s1">context</span><span class="pl-c1">=</span><span class="pl-s">'上下文'</span>,<span class="pl-s1">permanent</span><span class="pl-c1">=</span><span class="pl-c1">301</span><span class="pl-c1">/</span><span class="pl-c1">302</span>)
+	<span class="pl-c"># permanent可以指定永久重定向【301】还是临时重定向【302】</span>
+    <span class="pl-c"># 默认302，因为301将会缓存至浏览器，下一次将优先从缓存中获取界面</span></pre></div>
+<h3>【2】JsonResponse</h3>
+<ul>
+<li>返回json格式的响应数据</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">http</span> <span class="pl-k">import</span> <span class="pl-v">JsonResponse</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-s1">data</span> <span class="pl-c1">=</span> {
+        <span class="pl-s">'k'</span>:<span class="pl-s1">v</span>
+    }
+    <span class="pl-k">return</span> <span class="pl-v">JsonResponse</span>(<span class="pl-s1">data</span>)</pre></div>
+<ul>
+<li><code class="notranslate">JsonResponse</code>的其他参数
+<ul>
+<li><code class="notranslate">data</code>: 要转换为 JSON 的数据。默认情况下，由于安全漏洞，在 EcmaScript 5 之前只允许传递 <code class="notranslate">dict</code> 对象。有关更多信息，请参见 <code class="notranslate">safe</code> 参数。</li>
+<li><code class="notranslate">encoder</code>: 应该是一个 JSON 编码器类。默认为 <code class="notranslate">django.core.serializers.json.DjangoJSONEncoder</code>。</li>
+<li><code class="notranslate">safe</code>: 控制是否只有 <code class="notranslate">dict</code> 对象可以被序列化。默认为 <code class="notranslate">True</code>。</li>
+<li><code class="notranslate">json_dumps_params</code>: 传递给 <code class="notranslate">json.dumps()</code> 的关键字参数字典</li>
+</ul>
+</li>
+</ul>
+<h3>【3】获取文件数据</h3>
+<ul>
+<li>form表单中input标签设置type属性为file时，上传的数据需要进一步处理才能获取</li>
+</ul>
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-c">&lt;!-- 前端上传数据 --&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span>
+    <span class="pl-c">&lt;!-- 指定【enctype】参数 --&gt;</span>
+<span class="pl-kos">&lt;</span><span class="pl-ent">form</span> <span class="pl-c1">action</span>="" <span class="pl-c1">method</span>="<span class="pl-s">post</span>" <span class="pl-c1">enctype</span>="<span class="pl-s">multipart/form-data</span>"<span class="pl-kos">&gt;</span>
+    file: <span class="pl-kos">&lt;</span><span class="pl-ent">input</span> <span class="pl-c1">type</span>="<span class="pl-s">file</span>" <span class="pl-c1">name</span>='<span class="pl-s">filename</span>'<span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">form</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">body</span><span class="pl-kos">&gt;</span></pre></div>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-c"># 后端获取数据</span>
+
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-k">if</span> <span class="pl-s1">request</span>.<span class="pl-s1">method</span> <span class="pl-c1">==</span> <span class="pl-s">'POST'</span>:
+        <span class="pl-c"># 当表单提交数据时，获取到表单中的文件数据</span>
+        <span class="pl-s1">file_obj</span> <span class="pl-c1">=</span> <span class="pl-s1">request</span>.<span class="pl-v">FILES</span>.<span class="pl-en">get</span>(<span class="pl-s">'filename'</span>)  <span class="pl-c"># 当有多个文件时，根据name数据设置的键取值</span>
+        <span class="pl-c"># 当前file_obj只是内存中的临时缓存，不能直接写入文件，需要通过【.chunks()】方法</span>
+        <span class="pl-s1">file</span> <span class="pl-c1">=</span> <span class="pl-s1">file_obj</span>.<span class="pl-en">chunks</span>()
+        <span class="pl-k">with</span> <span class="pl-en">open</span>(<span class="pl-s">'文件路径'</span>, <span class="pl-s1">mode</span><span class="pl-c1">=</span><span class="pl-s">'wb'</span>) <span class="pl-k">as</span> <span class="pl-s1">fp</span>:
+            <span class="pl-k">for</span> <span class="pl-s1">data</span> <span class="pl-c1">in</span> <span class="pl-s1">file</span>:
+                <span class="pl-s1">fp</span>.<span class="pl-en">write</span>(<span class="pl-s1">data</span>)
+    <span class="pl-k">return</span> <span class="pl-en">render</span>(<span class="pl-s1">request</span>, <span class="pl-s">'前端页面.html'</span>)</pre></div>
+<ul>
+<li>
+<p><code class="notranslate">InMemoryUploadedFile</code> 和 <code class="notranslate">TemporaryUploadedFile</code> 对象并不是真正的文件对象，而是内存中的临时对象或临时文件对象。这些对象的主要作用是临时存储上传的文件内容，而不是直接写入文件系统中</p>
+</li>
+<li>
+<p><code class="notranslate">chunks()</code> 方法返回一个生成器（generator），每次迭代都会产生一块文件内容的数据。</p>
+</li>
+</ul>
+<h4>【3.1】文件对象常用的属性和方法</h4>
+<p>一些常用的属性包括：</p>
+<ol>
+<li><code class="notranslate">name</code>: 上传文件的名称。</li>
+<li><code class="notranslate">size</code>: 上传文件的大小。</li>
+<li><code class="notranslate">content_type</code>: 上传文件的内容类型。</li>
+<li><code class="notranslate">charset</code>: 上传文件的字符集。</li>
+<li><code class="notranslate">content_type_extra</code>: 上传文件的额外内容类型信息。</li>
+<li><code class="notranslate">file</code>: 上传文件的内容（BytesIO 对象）。</li>
+</ol>
+<p>一些常用的方法包括：</p>
+<ol>
+<li><code class="notranslate">read()</code>: 读取文件的内容。</li>
+<li><code class="notranslate">readline()</code>: 读取文件的一行。</li>
+<li><code class="notranslate">chunks(chunk_size=None)</code>: 生成器函数，按块读取文件内容。</li>
+<li><code class="notranslate">seek(offset, whence=0)</code>: 移动文件指针到指定位置。</li>
+<li><code class="notranslate">close()</code>: 关闭文件。</li>
+<li><code class="notranslate">multiple_chunks()</code>: 检查文件是否分成多个块。</li>
+<li><code class="notranslate">temporary_file_path()</code>: 获取文件的临时文件路径（如果存在）。</li>
+</ol>
+<h3>【4】CBV视图类</h3>
+<h4>【4.1】FBV和CBV</h4>
+<ul>
+<li>CBV（Class-Based Views）和 FBV（Function-Based Views）是 Django 中两种常用的视图编写方式，它们分别基于类和函数。</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># views.py</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">shorcuts</span> <span class="pl-k">import</span> <span class="pl-s1">render</span>,<span class="pl-v">HttpResponse</span>
+<span class="pl-s">'''CBV视图类需要继承【View类】'''</span>
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-v">View</span>
+
+
+<span class="pl-k">def</span> <span class="pl-en">fbv</span>(<span class="pl-s1">request</span>):
+    <span class="pl-c"># FBV基于函数</span>
+    <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'FBV'</span>)
+
+
+<span class="pl-k">class</span> <span class="pl-v">Cbv</span>(<span class="pl-v">View</span>):
+    <span class="pl-c"># CBV基于类</span>
+    
+    <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-s1">self</span>,<span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【get请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - get'</span>)
+    
+    <span class="pl-k">def</span> <span class="pl-en">post</span>(<span class="pl-s1">self</span>,<span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【post请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - post'</span>)</pre></div>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># urls.py</span>
+<span class="pl-s">'''在路由中，FBV与CBV的调用方式有所不同'''</span>
+
+<span class="pl-k">from</span> <span class="pl-s1">django</span>.<span class="pl-s1">urls</span> <span class="pl-k">import</span> <span class="pl-s1">path</span>
+<span class="pl-k">from</span> <span class="pl-s1">views</span> <span class="pl-k">import</span> <span class="pl-s1">fbv</span>,<span class="pl-v">Cbv</span>
+
+<span class="pl-s1">urlpatterns</span> <span class="pl-c1">=</span> [
+    <span class="pl-c"># FBV就是平时使用的最多的视图函数</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'路径/'</span>,<span class="pl-s1">fbv</span>),
+    <span class="pl-c"># CBV视图类调用时，需要使用【as_view()】方法调用</span>
+    <span class="pl-c"># 具体原因请看源码分析</span>
+    <span class="pl-en">path</span>(<span class="pl-s">'路径'</span>,<span class="pl-v">Cbv</span>.<span class="pl-en">as_view</span>(),<span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">'CBV'</span>)
+]</pre></div>
+<h4>【4.2】CBV源码分析</h4>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/d6019ed3b897ec0e640198687604bbc4ef6375fb196e32114d8edb1207775bf0/68747470733a2f2f7265732e6c6561346e696e672e746f702f7265732f3230323430333132313934373138372e706e67"><img src="https://camo.githubusercontent.com/d6019ed3b897ec0e640198687604bbc4ef6375fb196e32114d8edb1207775bf0/68747470733a2f2f7265732e6c6561346e696e672e746f702f7265732f3230323430333132313934373138372e706e67" alt="CBV源码解析" data-canonical-src="https://res.lea4ning.top/res/202403121947187.png" style="max-width: 100%;"></a></p>
+<h3>【5】装饰器</h3>
+<h4>【5.1】为FBV添加装饰器</h4>
+<ul>
+<li>FBV就是普通的函数，所以与给函数加装饰器语法一致</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># 装饰器</span>
+<span class="pl-k">def</span> <span class="pl-en">auth</span>(<span class="pl-s1">func</span>):
+    <span class="pl-k">def</span> <span class="pl-en">inner</span>(<span class="pl-s1">request</span>,<span class="pl-c1">*</span><span class="pl-s1">args</span>,<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>):
+        <span class="pl-c"># 需要注意，因为视图函数的第一个对象都是request，所以一般情况下将第一个形参设置为request</span>
+        <span class="pl-c"># 当然，如果愿意，也可以从【args[0]】中获取</span>
+        <span class="pl-s1">res</span> <span class="pl-c1">=</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>,<span class="pl-c1">*</span><span class="pl-s1">args</span>,<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>)
+        <span class="pl-k">return</span> <span class="pl-s1">res</span>
+    <span class="pl-k">return</span> <span class="pl-s1">inner</span>
+
+<span class="pl-c"># 加了装饰器视图函数</span>
+<span class="pl-en">@<span class="pl-s1">auth</span></span>
+<span class="pl-k">def</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>):
+    <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'oi'</span>)</pre></div>
+<h4>【5.2】为CBV添加装饰器</h4>
+<blockquote>
+<p>[<a href="https://docs.djangoproject.com/zh-hans/3.2/topics/class-based-views/intro/#decorating-the-class" rel="nofollow">装饰类 | Django 文档 | Django (djangoproject.com)</a>](<a href="https://docs.djangoproject.com/zh-hans/3.2/topics/class-based-views/intro/#decorating-the-class" rel="nofollow">https://docs.djangoproject.com/zh-hans/3.2/topics/class-based-views/intro/#decorating-the-class</a>)</p>
+</blockquote>
+<ul>
+<li>CBV视图类，因为是类，当调用普通的装饰器时，第一个参数将会错乱，可能时<code class="notranslate">self</code>也可能时<code class="notranslate">cls</code>，request对象将不太好寻找</li>
+<li>为CBV添加装饰器需要借助<code class="notranslate">from django.utils.decorators import method_decorator</code>组件</li>
+</ul>
+<h5>【5.2.1】加装饰器在类上</h5>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c"># 装饰器</span>
+<span class="pl-k">def</span> <span class="pl-en">auth</span>(<span class="pl-s1">func</span>):
+    <span class="pl-s">'''装饰器函数的创建是一致的'''</span>
+    <span class="pl-k">def</span> <span class="pl-en">inner</span>(<span class="pl-s1">request</span>,<span class="pl-c1">*</span><span class="pl-s1">args</span>,<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>):
+        <span class="pl-s1">res</span> <span class="pl-c1">=</span> <span class="pl-en">func</span>(<span class="pl-s1">request</span>,<span class="pl-c1">*</span><span class="pl-s1">args</span>,<span class="pl-c1">**</span><span class="pl-s1">kwargs</span>)
+        <span class="pl-k">return</span> <span class="pl-s1">res</span>
+    <span class="pl-k">return</span> <span class="pl-s1">inner</span>
+
+
+<span class="pl-en">@<span class="pl-en">method_decorator</span>(<span class="pl-s1">decorator</span><span class="pl-c1">=</span><span class="pl-s">'装饰器名'</span>,<span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">'需要加装装饰器的函数'</span>)</span>
+<span class="pl-k">class</span> <span class="pl-v">Cbv</span>(<span class="pl-v">View</span>):
+
+    <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【get请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - get'</span>)
+
+    <span class="pl-k">def</span> <span class="pl-en">post</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【post请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - post'</span>)</pre></div>
+<h5>【5.2.2】加装饰器在函数上</h5>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">class</span> <span class="pl-v">Cbv</span>(<span class="pl-v">View</span>):
+   
+    <span class="pl-en">@<span class="pl-en">method_decorator</span>(<span class="pl-s1">decorator</span><span class="pl-c1">=</span><span class="pl-s">'装饰器名'</span>)</span>
+    <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【get请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - get'</span>)
+    
+    
+	<span class="pl-en">@<span class="pl-en">method_decorator</span>(<span class="pl-s1">decorator</span><span class="pl-c1">=</span><span class="pl-s">'装饰器名'</span>)</span>
+    <span class="pl-k">def</span> <span class="pl-en">post</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【post请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - post'</span>)</pre></div>
+<h5>【5.2.3】加装饰器在函数dispatch</h5>
+<ul>
+<li>根据源码我们可以看到在执行我们写的方法前，会先执行dispatch方法，所以如果重写父类中的dispatch方法，并添加装饰器，那么在我们视图类中的所有方法都可以加上装饰器</li>
+</ul>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">class</span> <span class="pl-v">Cbv</span>(<span class="pl-v">View</span>):
+    <span class="pl-k">def</span> <span class="pl-en">get</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【get请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - get'</span>)
+
+    <span class="pl-k">def</span> <span class="pl-en">post</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>):
+        <span class="pl-s">'''当【post请求】调用视图类时执行的代码'''</span>
+        <span class="pl-k">return</span> <span class="pl-v">HttpResponse</span>(<span class="pl-s">'CBV - post'</span>)
+
+    <span class="pl-en">@<span class="pl-en">method_decorator</span>(<span class="pl-s1">decorator</span><span class="pl-c1">=</span><span class="pl-s">'装饰器名'</span>)</span>
+    <span class="pl-k">def</span> <span class="pl-en">dispatch</span>(<span class="pl-s1">self</span>, <span class="pl-s1">request</span>, <span class="pl-c1">*</span><span class="pl-s1">args</span>, <span class="pl-c1">**</span><span class="pl-s1">kwargs</span>):
+        <span class="pl-s">'''不对dispatch作其他操作，直接继承父类中的方法'''</span>
+        <span class="pl-k">return</span> <span class="pl-en">super</span>().<span class="pl-en">dispatch</span>(<span class="pl-s1">request</span>, <span class="pl-c1">*</span><span class="pl-s1">args</span>, <span class="pl-c1">**</span><span class="pl-s1">kwargs</span>)</pre></div>
+<h5>【5.4】当装饰器有多个时</h5>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s">'''当装饰器有多个时，可以构建一个列表或元组'''</span>
+<span class="pl-s1">decorators</span> <span class="pl-c1">=</span> [<span class="pl-s1">never_cache</span>, <span class="pl-s1">login_required</span>]
+
+<span class="pl-c"># 传参时将上述的列表或元组传入即可</span>
+<span class="pl-en">@<span class="pl-en">method_decorator</span>(<span class="pl-s1">decorators</span>, <span class="pl-s1">name</span><span class="pl-c1">=</span><span class="pl-s">'dispatch'</span>)</span>
+<span class="pl-k">class</span> <span class="pl-v">ProtectedView</span>(<span class="pl-v">View</span>):
+    <span class="pl-s1">template_name</span> <span class="pl-c1">=</span> <span class="pl-s">'secret.html'</span></pre></div>
+</div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer">Copyright © <span id="year"></span><a href="https://lea4ning.github.io/lea4ning-githun.io"> Lea4ning Blog </a>
+<p>
+<span id="runday"></span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a>
+</p>
+
+<script>
+if(""!=""){
+    var now=new Date();
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("year").innerHTML=now.getFullYear();
+    if(""!=""){document.getElementById("runday").innerHTML=" • "+"网站运行"+diffDay+"天"+" • ";}
+    else{document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";}
+}
+</script>
+</div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n\n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","lea4ning/lea4ning-githun.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+</script>
+
+
+</html>
